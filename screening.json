@@ -1,0 +1,21 @@
+{
+  "title": "HCL Technologies",
+  "questions": [
+    {
+      "body": "Are you ready to take the interview with HCL for technical lead role?",
+      "type": "yes-no"
+    },
+    {
+      "body": "Enter month and day in MM-DD format",
+      "type": "numeric"
+    },
+    {
+      "body": "Enter time in HH:MM format",
+      "type": "numeric"
+    },
+    {
+      "body": "On a scale of 1 to 10, how would you rate the quality of this call?",
+      "type": "numeric"
+    }
+  ]
+}
