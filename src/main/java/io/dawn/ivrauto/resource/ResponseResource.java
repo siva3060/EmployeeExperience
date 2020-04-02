@@ -74,6 +74,7 @@ public class ResponseResource {
 
           log.info("generating exam date and time...");
           final List<String> responseDateTime = responseRepository.getDate();
+          log.info("generated exam date and time successfully...");
 
           String[] splitDate = responseDateTime.get(0).split("(?<=\\G.{" + 2 + "})");
           String[] splitTime = responseDateTime.get(1).split("(?<=\\G.{" + 2 + "})");

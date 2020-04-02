@@ -40,7 +40,7 @@ public class ScreeningResource {
   @RequestMapping(value = "/screening/call", method = RequestMethod.GET)
   public void call(HttpServletRequest request, HttpServletResponse response) throws Exception {
     this.screeningService = new ScreeningService(screeningRepository);
-    log.info("Retrieving the first screening question...");
+    log.info("Retrieving your screening questions...");
 
     Screening lastScreening = screeningService.findLast();
 
