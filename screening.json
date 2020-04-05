@@ -6,11 +6,11 @@
       "type": "yes-no"
     },
     {
-      "body": "Enter month and day in MM-DD format",
+      "body": "What date will be suitable for you to take up the test. Enter month and day in MM-DD format",
       "type": "numeric"
     },
     {
-      "body": "Enter time in HH:MM format",
+      "body": "What time will be suitable on your selected date? Enter time in HH:MM format",
       "type": "numeric"
     },
     {
