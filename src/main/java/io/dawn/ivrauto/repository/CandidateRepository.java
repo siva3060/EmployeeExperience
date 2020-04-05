@@ -15,4 +15,10 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
       value = "SELECT c.candidate_mobile_number FROM candidates c where c.candidate_name = :callee",
       nativeQuery = true)
   String findCandidateNumberByName(@Param("callee") String callee);
+
+  @Async
+  @Query(
+      value = "SELECT c.candidate_skills FROM candidates c WHERE c.candidate_email = :email",
+      nativeQuery = true)
+  String findSkillByCandidateEmail(@Param("email") String email);
 }

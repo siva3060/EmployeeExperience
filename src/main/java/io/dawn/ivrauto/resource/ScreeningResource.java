@@ -1,6 +1,7 @@
 package io.dawn.ivrauto.resource;
 
 import io.dawn.ivrauto.model.Screening;
+import io.dawn.ivrauto.repository.CandidateRepository;
 import io.dawn.ivrauto.repository.ScreeningRepository;
 import io.dawn.ivrauto.service.ScreeningService;
 import io.dawn.ivrauto.util.TwiMLUtil;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScreeningResource {
   private ScreeningRepository screeningRepository;
   private ScreeningService screeningService;
+  private CandidateRepository candidateRepository;
 
   @Value("${ngrok.domain}")
   private String ngrokDomain;
@@ -27,9 +29,12 @@ public class ScreeningResource {
 
   @Autowired
   public ScreeningResource(
-      ScreeningRepository screeningRepository, ScreeningService screeningService) {
+      ScreeningRepository screeningRepository,
+      ScreeningService screeningService,
+      CandidateRepository candidateRepository) {
     this.screeningRepository = screeningRepository;
     this.screeningService = screeningService;
+    this.candidateRepository = candidateRepository;
   }
 
   /**
@@ -93,10 +98,19 @@ public class ScreeningResource {
    */
   private String getFirstQuestionRedirect(Screening screening, HttpServletRequest request)
       throws Exception {
+    String skill = candidateRepository.findSkillByCandidateEmail("nithin2889@gmail.com");
     String welcomeMessage =
         "This is an automated call from "
             + screening.getTitle()
-            + " We have found your profile from Linked In.";
+            + " for an interesting opportunity in digital space where we building a transformation"
+            + " program using modern digital technologies stack with Dev Ops using Agile based execution."
+            + " We are looking for professionals across modern technology streams of backend (Java 8 with Spring Boot),"
+            + " front end (with Google Polymer or React J S or Angular J S) having strong web components "
+            + " fundamentals, "
+            + " Dev Ops (building CI, CD and release pipelines), Building digital global data lakes using Apache "
+            + " frameworks and IBM tool. We found that you have experience in "
+            + skill
+            + " and we want to fix up an appointment with you for a formal discussion and evaluation.";
     String questionURL = ngrokDomain + "/question?screening=" + screening.getId() + "&question=1";
 
     if (request.getParameter("MessageSid") != null) {

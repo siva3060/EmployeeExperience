@@ -13,7 +13,7 @@ import io.dawn.ivrauto.model.Question;
  */
 public class VoiceQuestionBuilder implements QuestionBuilder {
   String numericInstructions =
-      "For the next question select a number with the dial pad and then press the pound key";
+      "For the next question, type in your answer using the keypad and then press the pound key.";
   String booleanInstructions =
       "For the next question, press 1 for yes, and 0 for no. Then press the pound key.";
   private Question question;
