@@ -1,6 +1,5 @@
 package io.dawn.ivrauto.service;
 
-import io.dawn.ivrauto.model.Question;
 import io.dawn.ivrauto.model.Response;
 import io.dawn.ivrauto.repository.ResponseRepository;
 import java.util.List;
@@ -40,7 +39,7 @@ public class ResponseService {
     return responseRepository.findOne(id);
   }*/
 
-  public Response getBySessionSidAndQuestion(String sessionSid, Question question) {
-    return responseRepository.getBySessionSidAndQuestion(sessionSid, question);
+  public Response findProperResponse(String sessionSid, Long questionId) {
+    return responseRepository.findProperResponse(sessionSid, questionId);
   }
 }

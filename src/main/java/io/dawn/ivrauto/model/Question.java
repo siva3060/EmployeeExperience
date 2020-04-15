@@ -15,7 +15,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "question")
 public class Question {
   @OneToMany(mappedBy = "question")
   @OrderBy("id ASC")

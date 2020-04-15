@@ -10,9 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class DBWriter implements ItemWriter<Candidate> {
+public class CandidateDBWriter implements ItemWriter<Candidate> {
 
-  @Autowired private CandidateRepository candidateRepository;
+  private final CandidateRepository candidateRepository;
+
+  @Autowired
+  public CandidateDBWriter(CandidateRepository candidateRepository) {
+    this.candidateRepository = candidateRepository;
+  }
 
   @Override
   public void write(List<? extends Candidate> candidates) throws Exception {

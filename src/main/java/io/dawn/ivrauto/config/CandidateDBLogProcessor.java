@@ -7,11 +7,10 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class DBLogProcessor implements ItemProcessor<Candidate, Candidate> {
+public class CandidateDBLogProcessor implements ItemProcessor<Candidate, Candidate> {
 
   @Override
   public Candidate process(Candidate candidate) throws Exception {
-    log.info("Loading candidates: " + candidate);
     return candidate;
   }
 }

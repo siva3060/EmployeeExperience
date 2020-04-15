@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -29,15 +30,21 @@ public class Response {
   @JoinColumn(name = "question_id")
   private Question question;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "candidate_id")
+  private Candidate candidate;
+
   @Column(name = "date")
   private LocalDate date;
 
   public Response() {}
 
-  public Response(String response, String sessionSid, Question question, LocalDate date) {
+  public Response(
+      String response, String sessionSid, Question question, Candidate candidate, LocalDate date) {
     this.response = response;
     this.sessionSid = sessionSid;
     this.question = question;
+    this.candidate = candidate;
     this.date = date;
   }
 
@@ -71,6 +78,14 @@ public class Response {
 
   public void setQuestion(Question question) {
     this.question = question;
+  }
+
+  public Candidate getCandidate() {
+    return candidate;
+  }
+
+  public void setCandidate(Candidate candidate) {
+    this.candidate = candidate;
   }
 
   public LocalDate getDate() {

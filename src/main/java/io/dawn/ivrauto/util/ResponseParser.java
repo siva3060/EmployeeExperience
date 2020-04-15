@@ -1,5 +1,6 @@
 package io.dawn.ivrauto.util;
 
+import io.dawn.ivrauto.model.Candidate;
 import io.dawn.ivrauto.model.Question;
 import io.dawn.ivrauto.model.Response;
 import java.time.LocalDate;
@@ -8,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 /** Class returns the appropriate Response model when you call the parse() method */
 public class ResponseParser {
   private Question question;
+  private Candidate candidate;
   private HttpServletRequest request;
 
-  public ResponseParser(Question question, HttpServletRequest request) {
+  public ResponseParser(Question question, Candidate candidate, HttpServletRequest request) {
     this.question = question;
+    this.candidate = candidate;
     this.request = request;
   }
 
@@ -44,6 +47,6 @@ public class ResponseParser {
     }
     String content = request.getParameter(contentKey);
     String sessionSid = request.getParameter(sessionKey);
-    return new Response(content, sessionSid, question, LocalDate.now());
+    return new Response(content, sessionSid, question, candidate, LocalDate.now());
   }
 }

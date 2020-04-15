@@ -11,12 +11,14 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Slf4j
 public class QuestionResource {
   private ScreeningRepository screeningRepository;
 
@@ -33,6 +35,8 @@ public class QuestionResource {
   @RequestMapping(value = "/question", method = RequestMethod.GET, produces = "application/xml")
   public void show(HttpServletRequest request, HttpServletResponse response) throws Exception {
     ScreeningService screeningService = new ScreeningService(screeningRepository);
+    final long cid = Long.parseLong(request.getParameter("cid"));
+    log.info("Question Resource CID: " + cid);
     Optional<Screening> screening =
         screeningService.find(Long.parseLong(request.getParameter("screening")));
 
@@ -42,7 +46,7 @@ public class QuestionResource {
       QuestionBuilder builder = getQuestionHandler(currentQuestion, request);
 
       if (currentQuestion != null) {
-        response.getWriter().print(builder.build());
+        response.getWriter().print(builder.build(cid));
       } else {
         response.getWriter().print(builder.buildNoMoreQuestions());
       }

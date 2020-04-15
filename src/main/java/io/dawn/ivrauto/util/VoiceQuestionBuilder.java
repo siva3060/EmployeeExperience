@@ -6,6 +6,7 @@ import com.twilio.twiml.voice.Hangup;
 import com.twilio.twiml.voice.Pause;
 import com.twilio.twiml.voice.Say;
 import com.twilio.twiml.voice.Say.Voice;
+import io.dawn.ivrauto.model.Candidate;
 import io.dawn.ivrauto.model.Question;
 
 /**
@@ -27,14 +28,14 @@ public class VoiceQuestionBuilder implements QuestionBuilder {
    * specific TwiMLResponse
    */
   @Override
-  public String build() throws TwiMLException {
+  public String build(long cid) throws TwiMLException {
     switch (question.getType()) {
       case "text":
         return getRecordTwiML();
       case "numeric":
-        return getGatherResponse(numericInstructions);
+        return getGatherResponse(numericInstructions, cid);
       case "yes-no":
-        return getGatherResponse(booleanInstructions);
+        return getGatherResponse(booleanInstructions, cid);
       default:
         return buildNoMoreQuestions();
     }
@@ -46,7 +47,7 @@ public class VoiceQuestionBuilder implements QuestionBuilder {
     String errorMessage =
         "We are sorry, there are no more questions available for this screening. Good bye.";
     return new VoiceResponse.Builder()
-        .say(new Say.Builder(errorMessage).voice(Voice.POLLY_ADITI).build())
+        .say(new Say.Builder(errorMessage).voice(Voice.POLLY_RAVEENA).build())
         .hangup(new Hangup.Builder().build())
         .build()
         .toXml();
@@ -55,20 +56,20 @@ public class VoiceQuestionBuilder implements QuestionBuilder {
   private String getRecordTwiML() throws TwiMLException {
     String recordingInstructions = "Record your answer after the beep.";
     return new VoiceResponse.Builder()
-        .say(new Say.Builder(recordingInstructions).voice(Voice.POLLY_ADITI).build())
+        .say(new Say.Builder(recordingInstructions).voice(Voice.POLLY_RAVEENA).build())
         .pause(new Pause.Builder().build())
-        .say(new Say.Builder(question.getBody()).voice(Voice.POLLY_ADITI).build())
+        .say(new Say.Builder(question.getBody()).voice(Voice.POLLY_RAVEENA).build())
         .record(TwiMLUtil.record(question))
         .build()
         .toXml();
   }
 
-  private String getGatherResponse(String defaultMessage) throws TwiMLException {
+  private String getGatherResponse(String defaultMessage, long cid) throws TwiMLException {
     return new VoiceResponse.Builder()
-        .say(new Say.Builder(defaultMessage).voice(Voice.POLLY_ADITI).build())
+        .say(new Say.Builder(defaultMessage).voice(Voice.POLLY_RAVEENA).build())
         .pause(new Pause.Builder().build())
-        .say(new Say.Builder(question.getBody()).voice(Voice.POLLY_ADITI).build())
-        .gather(TwiMLUtil.gather(question))
+        .say(new Say.Builder(question.getBody()).voice(Voice.POLLY_RAVEENA).build())
+        .gather(TwiMLUtil.gather(question, cid))
         .build()
         .toXml();
   }

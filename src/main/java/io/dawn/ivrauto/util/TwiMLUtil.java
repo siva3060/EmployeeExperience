@@ -14,12 +14,14 @@ import com.twilio.twiml.voice.Say;
 import com.twilio.twiml.voice.Say.Voice;
 import io.dawn.ivrauto.model.Question;
 import io.dawn.ivrauto.model.Screening;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TwiMLUtil {
 
-  public static String redirect(int nextQuestionNumber, Screening screening) throws TwiMLException {
+  public static String redirect(long cid, int nextQuestionNumber, Screening screening) throws TwiMLException {
     String nextQuestionURL =
-        "/question?screening=" + screening.getId() + "&question=" + nextQuestionNumber;
+        "/question?cid="+cid+"&screening=" + screening.getId() + "&question=" + nextQuestionNumber;
     return redirect(nextQuestionURL, HttpMethod.GET).toXml();
   }
 
@@ -44,9 +46,10 @@ public class TwiMLUtil {
         .build();
   }
 
-  public static Gather gather(Question question) {
+  public static Gather gather(Question question, long cid) {
+    log.info("TwiMLUtil: " + cid);
     return new Gather.Builder()
-        .action("/save_response?qid=" + question.getId())
+        .action("/save_response?qid=" + question.getId() + "&cid=" + cid)
         .method(HttpMethod.POST)
         .finishOnKey("#")
         .build();
@@ -54,7 +57,7 @@ public class TwiMLUtil {
 
   public static String voiceResponse(String message) throws TwiMLException {
     return new VoiceResponse.Builder()
-        .say(new Say.Builder(message).voice(Voice.POLLY_ADITI).build())
+        .say(new Say.Builder(message).voice(Voice.POLLY_RAVEENA).build())
         .hangup(new Hangup.Builder().build())
         .build()
         .toXml();
@@ -70,7 +73,7 @@ public class TwiMLUtil {
   public static String voiceResponseWithRedirect(String message, String questionUrl)
       throws TwiMLException {
     return new VoiceResponse.Builder()
-        .say(new Say.Builder(message).voice(Voice.POLLY_ADITI).build())
+        .say(new Say.Builder(message).voice(Voice.POLLY_RAVEENA).build())
         .redirect(
             new com.twilio.twiml.voice.Redirect.Builder(questionUrl).method(HttpMethod.GET).build())
         .build()

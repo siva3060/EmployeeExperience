@@ -4,6 +4,7 @@ import com.twilio.http.HttpMethod;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.api.v2010.account.Call;
 import com.twilio.type.PhoneNumber;
+import io.dawn.ivrauto.model.Candidate;
 import java.net.URI;
 import java.net.URISyntaxException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +29,19 @@ public class CallService {
     this.restClient = restClient;
   }
 
-  public void call(final String phoneNumber) throws URISyntaxException {
+  public void call(final Candidate candidate) throws URISyntaxException {
     Call call =
         Call.creator(
-                new PhoneNumber(phoneNumber),
+                new PhoneNumber(candidate.getMobileNumber()),
                 new PhoneNumber(fromTwilio),
-                URI.create(ngrokDomain + "/screening/call"))
+                URI.create(
+                    ngrokDomain
+                        + "/screening/call?cid="
+                        + candidate.getId()
+                        + "&number="
+                        + candidate.getMobileNumber()))
             .setMethod(HttpMethod.GET)
             .create(restClient);
-    log.info(call.getAccountSid());
+    log.info("Call status: " + call.getStatus());
   }
 }

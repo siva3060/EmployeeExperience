@@ -12,7 +12,7 @@ import io.dawn.ivrauto.model.Question;
 public class SMSQuestionBuilder implements QuestionBuilder {
   Question question;
   private String booleanInstructions = "For the next question, type 1 for yes, and 0 for no. ";
-  private String numericInstrunctions = "For the next question, please answer with a number. ";
+  private String numericInstructions = "For the next question, please answer with a number. ";
   private String errorMessage =
       "We are sorry, there are no more questions available for this screening. Good bye.";
 
@@ -25,10 +25,10 @@ public class SMSQuestionBuilder implements QuestionBuilder {
    * specific TwiMLResponse
    */
   @Override
-  public String build() throws TwiMLException {
+  public String build(long cid) throws TwiMLException {
     switch (question.getType()) {
       case "numeric":
-        return renderTwiMLMessage(numericInstrunctions + question.getBody());
+        return renderTwiMLMessage(numericInstructions + question.getBody());
       case "yes-no":
         return renderTwiMLMessage(booleanInstructions + question.getBody());
       default:

@@ -12,7 +12,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "screenings")
+@Table(name = "screening")
 public class Screening {
   @OneToMany(mappedBy = "screening")
   @OrderBy("id ASC")

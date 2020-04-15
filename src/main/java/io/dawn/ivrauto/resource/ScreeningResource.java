@@ -3,6 +3,7 @@ package io.dawn.ivrauto.resource;
 import io.dawn.ivrauto.model.Screening;
 import io.dawn.ivrauto.repository.CandidateRepository;
 import io.dawn.ivrauto.repository.ScreeningRepository;
+import io.dawn.ivrauto.service.CandidateService;
 import io.dawn.ivrauto.service.ScreeningService;
 import io.dawn.ivrauto.util.TwiMLUtil;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScreeningResource {
   private ScreeningRepository screeningRepository;
   private ScreeningService screeningService;
+  private CandidateService candidateService;
   private CandidateRepository candidateRepository;
 
   @Value("${ngrok.domain}")
@@ -31,9 +33,11 @@ public class ScreeningResource {
   public ScreeningResource(
       ScreeningRepository screeningRepository,
       ScreeningService screeningService,
+      CandidateService candidateService,
       CandidateRepository candidateRepository) {
     this.screeningRepository = screeningRepository;
     this.screeningService = screeningService;
+    this.candidateService = candidateService;
     this.candidateRepository = candidateRepository;
   }
 
@@ -45,8 +49,6 @@ public class ScreeningResource {
   @RequestMapping(value = "/screening/call", method = RequestMethod.GET)
   public void call(HttpServletRequest request, HttpServletResponse response) throws Exception {
     this.screeningService = new ScreeningService(screeningRepository);
-    log.info("Retrieving your screening questions...");
-
     Screening lastScreening = screeningService.findLast();
 
     if (lastScreening != null) {
@@ -62,7 +64,7 @@ public class ScreeningResource {
    * to be answered. An SMS is just a message instead of a long running call. We store state by
    * mapping a Twilio's Cookie to a Session.
    */
-  @RequestMapping(value = "/screening/sms", method = RequestMethod.GET)
+  /*@RequestMapping(value = "/screening/sms", method = RequestMethod.GET)
   public void sms(HttpServletRequest request, HttpServletResponse response) throws Exception {
     this.screeningService = new ScreeningService(screeningRepository);
 
@@ -72,7 +74,7 @@ public class ScreeningResource {
     if (lastScreening != null) {
       if (session == null || session.isNew()) {
         // New session,
-        response.getWriter().print(getFirstQuestionRedirect(lastScreening, request));
+        response.getWriter().print(getFirstQuestionRedirect(lastScreening, request, number));
       } else {
         // Ongoing session, redirect to ResponseController to save it's answer.
         response.getWriter().print(getSaveResponseRedirect(session));
@@ -87,7 +89,7 @@ public class ScreeningResource {
   private String getSaveResponseRedirect(HttpSession session) throws Exception {
     String saveURL = "/save_response?qid=" + getQuestionIdFromSession(session);
     return TwiMLUtil.redirectPost(saveURL);
-  }
+  }*/
 
   /**
    * Creates the TwiMLResponse for the first question of the screening
@@ -98,25 +100,54 @@ public class ScreeningResource {
    */
   private String getFirstQuestionRedirect(Screening screening, HttpServletRequest request)
       throws Exception {
-    String skill = candidateRepository.findSkillByCandidateEmail("nithin2889@gmail.com");
-    String welcomeMessage =
-        "This is an automated call from "
-            + screening.getTitle()
-            + " for an interesting opportunity in digital space where we building a transformation"
-            + " program using modern digital technologies stack with Dev Ops using Agile based execution."
-            + " We are looking for professionals across modern technology streams of backend (Java 8 with Spring Boot),"
-            + " front end (with Google Polymer or React J S or Angular J S) having strong web components "
-            + " fundamentals, "
-            + " Dev Ops (building CI, CD and release pipelines), Building digital global data lakes using Apache "
-            + " frameworks and IBM tool. We found that you have experience in "
-            + skill
-            + " and we want to fix up an appointment with you for a formal discussion and evaluation.";
-    String questionURL = ngrokDomain + "/question?screening=" + screening.getId() + "&question=1";
+    final String cid = request.getParameter("cid");
+    log.info("getFirstQuestionRedirect: " + cid);
+    final String phoneNumber = "+".concat(request.getParameter("number").trim());
+    String skill = candidateRepository.findSkillByCandidateNumber(phoneNumber);
 
+    StringBuilder stringBuilder = new StringBuilder(1000);
+    /*stringBuilder
+        .append("This is an automated call from ")
+        .append(screening.getTitle())
+        .append(
+            " for an interesting opportunity in digital space where we are building a transformation")
+        .append(
+            " program using modern digital technologies stack with DevOps using Agile based execution.")
+        .append(
+            " We are looking for professionals across modern technology streams of backend like Java 8 with Spring "
+                + "Boot,")
+        .append(
+            " front end (with Google Polymer or React J S or Angular J S) having strong web components ")
+        .append(
+            " fundamentals, DevOps (building CI, CD and release pipelines), and building digital global data lakes ")
+        .append(" using Apache frameworks and IBM tool. We found that you have experience in ")
+        .append(skill)
+        .append(
+            " and we want to fix up an appointment with you for a formal discussion and evaluation.");*/
+
+    stringBuilder
+        .append("This is an automated call from ")
+        .append(screening.getTitle())
+        .append(" We found that you have experience in ")
+        .append(skill);
+
+    /*String welcomeMessage =
+    "This is an automated call from "
+        + screening.getTitle()
+        + " for an interesting opportunity in digital space where we building a transformation"
+        + " program using modern digital technologies stack with Dev Ops using Agile based execution."
+        + " We are looking for professionals across modern technology streams of backend (Java 8 with Spring Boot),"
+        + " front end (with Google Polymer or React J S or Angular J S) having strong web components "
+        + " fundamentals, Dev Ops (building CI, CD and release pipelines), Building digital global data lakes "
+        + " using Apache frameworks and IBM tool. We found that you have experience in "
+        + skill
+        + " and we want to fix up an appointment with you for a formal discussion and evaluation.";*/
+
+    String questionURL = ngrokDomain + "/question?cid="+ cid +"&screening=" + screening.getId() + "&question=1";
     if (request.getParameter("MessageSid") != null) {
-      return TwiMLUtil.messagingResponseWithRedirect(welcomeMessage, questionURL);
+      return TwiMLUtil.messagingResponseWithRedirect(stringBuilder.toString(), questionURL);
     } else {
-      return TwiMLUtil.voiceResponseWithRedirect(welcomeMessage, questionURL);
+      return TwiMLUtil.voiceResponseWithRedirect(stringBuilder.toString(), questionURL);
     }
   }
 

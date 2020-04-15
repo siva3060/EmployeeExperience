@@ -22,9 +22,9 @@ import org.springframework.core.io.FileSystemResource;
 
 @Configuration
 @EnableBatchProcessing
-public class BatchConfig {
+public class CandidatesBatchConfig {
 
-  @Value("${import.data.csv.file}")
+  @Value("${import.data.candidates.csv.file}")
   String csvResource;
 
   @Bean
@@ -37,7 +37,7 @@ public class BatchConfig {
 
     Step step =
         stepBuilderFactory
-            .get("CSV-file-load")
+            .get("Candidate-CSV-file-load")
             .<Candidate, Candidate>chunk(100)
             .reader(itemReader)
             .processor(itemProcessor)
@@ -45,7 +45,7 @@ public class BatchConfig {
             .build();
 
     return jobBuilderFactory
-        .get("EmployeeExperienceCSVLoad")
+        .get("CandidateCSVLoad")
         .incrementer(new RunIdIncrementer())
         .start(step)
         .build();
@@ -55,7 +55,7 @@ public class BatchConfig {
   public FlatFileItemReader<Candidate> itemReader() {
     FlatFileItemReader<Candidate> flatFileItemReader = new FlatFileItemReader<>();
     flatFileItemReader.setResource(new FileSystemResource(csvResource));
-    flatFileItemReader.setName("CSV-Reader");
+    flatFileItemReader.setName("Candidate-CSV-Reader");
     flatFileItemReader.setLinesToSkip(1);
     flatFileItemReader.setLineMapper(lineMapper());
     return flatFileItemReader;
@@ -68,12 +68,7 @@ public class BatchConfig {
     lineTokenizer.setDelimiter(",");
     lineTokenizer.setStrict(false);
     lineTokenizer.setNames(
-        "candidate_name",
-        "candidate_mobile_number",
-        "candidate_email",
-        "candidate_skills",
-        "spoc",
-        "delivery_lead");
+        "name", "mobile_number", "email", "skills", "years_of_exp", "spoc", "delivery_lead");
 
     BeanWrapperFieldSetMapper<Candidate> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
     fieldSetMapper.setTargetType(Candidate.class);

@@ -1,24 +1,35 @@
 package io.dawn.ivrauto.repository;
 
 import io.dawn.ivrauto.model.Candidate;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface CandidateRepository extends JpaRepository<Candidate, Long> {
 
-  @Async
   @Query(
-      value = "SELECT c.candidate_mobile_number FROM candidates c where c.candidate_name = :callee",
+      value = "SELECT c.skills FROM candidate c WHERE c.mobile_number = :number",
       nativeQuery = true)
-  String findCandidateNumberByName(@Param("callee") String callee);
+  String findSkillByCandidateNumber(@Param("number") String number);
 
-  @Async
   @Query(
-      value = "SELECT c.candidate_skills FROM candidates c WHERE c.candidate_email = :email",
+      value =
+          "SELECT c.id, c.name, c.mobile_number, c.email, c.skills, c.years_of_exp, "
+              + "c.spoc, c.delivery_lead, c.interview_status, c.doj FROM candidate c",
       nativeQuery = true)
-  String findSkillByCandidateEmail(@Param("email") String email);
+  List<Candidate> findCandidate();
+
+  @Transactional
+  @Modifying(clearAutomatically = true)
+  @Query(
+      value =
+          "UPDATE candidate SET interview_status = 'COMPLETED' WHERE id = :cid",
+      nativeQuery = true)
+  void updateInterviewStatus(@Param("cid") Long cid);
 }

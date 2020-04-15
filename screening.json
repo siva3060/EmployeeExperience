@@ -2,10 +2,6 @@
   "title": "HCL Technologies",
   "questions": [
     {
-      "body": "Are you ready to take the interview with HCL for technical lead role?",
-      "type": "yes-no"
-    },
-    {
       "body": "What date will be suitable for you to take up the test. Enter month and day in MM-DD format",
       "type": "numeric"
     },
