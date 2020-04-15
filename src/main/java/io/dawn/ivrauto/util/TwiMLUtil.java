@@ -47,7 +47,6 @@ public class TwiMLUtil {
   }
 
   public static Gather gather(Question question, long cid) {
-    log.info("TwiMLUtil: " + cid);
     return new Gather.Builder()
         .action("/save_response?qid=" + question.getId() + "&cid=" + cid)
         .method(HttpMethod.POST)

@@ -106,7 +106,7 @@ public class ScreeningResource {
     String skill = candidateRepository.findSkillByCandidateNumber(phoneNumber);
 
     StringBuilder stringBuilder = new StringBuilder(1000);
-    /*stringBuilder
+    stringBuilder
         .append("This is an automated call from ")
         .append(screening.getTitle())
         .append(
@@ -123,25 +123,7 @@ public class ScreeningResource {
         .append(" using Apache frameworks and IBM tool. We found that you have experience in ")
         .append(skill)
         .append(
-            " and we want to fix up an appointment with you for a formal discussion and evaluation.");*/
-
-    stringBuilder
-        .append("This is an automated call from ")
-        .append(screening.getTitle())
-        .append(" We found that you have experience in ")
-        .append(skill);
-
-    /*String welcomeMessage =
-    "This is an automated call from "
-        + screening.getTitle()
-        + " for an interesting opportunity in digital space where we building a transformation"
-        + " program using modern digital technologies stack with Dev Ops using Agile based execution."
-        + " We are looking for professionals across modern technology streams of backend (Java 8 with Spring Boot),"
-        + " front end (with Google Polymer or React J S or Angular J S) having strong web components "
-        + " fundamentals, Dev Ops (building CI, CD and release pipelines), Building digital global data lakes "
-        + " using Apache frameworks and IBM tool. We found that you have experience in "
-        + skill
-        + " and we want to fix up an appointment with you for a formal discussion and evaluation.";*/
+            " and we want to fix up an appointment with you for a formal discussion and evaluation.");
 
     String questionURL = ngrokDomain + "/question?cid="+ cid +"&screening=" + screening.getId() + "&question=1";
     if (request.getParameter("MessageSid") != null) {

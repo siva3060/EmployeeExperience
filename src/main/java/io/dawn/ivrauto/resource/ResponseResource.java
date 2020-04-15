@@ -92,7 +92,6 @@ public class ResponseResource {
 
           log.info("Generating exam date and time for cid: " + cid);
           final List<String> responseDateTime = responseRepository.generateExamDate(cid);
-          log.info("responseDateTime: " + responseDateTime);
           StringBuilder sms = generateInterviewDateAndTime(responseDateTime);
           log.info("Interview date and time generated successfully...");
 

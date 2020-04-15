@@ -36,7 +36,6 @@ public class QuestionResource {
   public void show(HttpServletRequest request, HttpServletResponse response) throws Exception {
     ScreeningService screeningService = new ScreeningService(screeningRepository);
     final long cid = Long.parseLong(request.getParameter("cid"));
-    log.info("Question Resource CID: " + cid);
     Optional<Screening> screening =
         screeningService.find(Long.parseLong(request.getParameter("screening")));
 
