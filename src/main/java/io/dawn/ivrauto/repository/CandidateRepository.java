@@ -21,7 +21,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
   @Query(
       value =
           "SELECT c.id, c.name, c.mobile_number, c.email, c.skills, c.years_of_exp, "
-              + "c.spoc, c.delivery_lead, c.interview_status, c.doj FROM candidate c",
+              + "c.spoc, c.delivery_lead, c.interview_status, c.doj FROM candidate c"
+              + " WHERE interview_status IS NULL",
       nativeQuery = true)
   List<Candidate> findCandidate();
 

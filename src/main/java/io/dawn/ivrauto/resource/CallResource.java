@@ -40,7 +40,7 @@ public class CallResource {
       for (Candidate candidate : candidateList) {
         if (CallResource.isPhoneNumberValid(candidate.getMobileNumber())) {
           if (candidate.getInterviewStatus() == null) {
-            log.info("calling: " + candidate.getMobileNumber());
+            log.info("calling: " + candidate.getName() + " on " + candidate.getMobileNumber());
             callService.call(candidate);
           }
         } else {

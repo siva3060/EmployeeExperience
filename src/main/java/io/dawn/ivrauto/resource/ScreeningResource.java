@@ -101,7 +101,6 @@ public class ScreeningResource {
   private String getFirstQuestionRedirect(Screening screening, HttpServletRequest request)
       throws Exception {
     final String cid = request.getParameter("cid");
-    log.info("getFirstQuestionRedirect: " + cid);
     final String phoneNumber = "+".concat(request.getParameter("number").trim());
     String skill = candidateRepository.findSkillByCandidateNumber(phoneNumber);
 
@@ -125,7 +124,8 @@ public class ScreeningResource {
         .append(
             " and we want to fix up an appointment with you for a formal discussion and evaluation.");
 
-    String questionURL = ngrokDomain + "/question?cid="+ cid +"&screening=" + screening.getId() + "&question=1";
+    String questionURL =
+        ngrokDomain + "/question?cid=" + cid + "&screening=" + screening.getId() + "&question=1";
     if (request.getParameter("MessageSid") != null) {
       return TwiMLUtil.messagingResponseWithRedirect(stringBuilder.toString(), questionURL);
     } else {
