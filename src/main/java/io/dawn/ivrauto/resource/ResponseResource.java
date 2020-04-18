@@ -16,6 +16,7 @@ import io.dawn.ivrauto.service.ResponseService;
 import io.dawn.ivrauto.util.ResponseParser;
 import io.dawn.ivrauto.util.TwiMLUtil;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -121,8 +122,8 @@ public class ResponseResource {
     String[] splitDate = responseDateTime.get(0).split("(?<=\\G.{" + 2 + "})");
     String[] splitTime = responseDateTime.get(1).split("(?<=\\G.{" + 2 + "})");
 
-    final String examDate = splitDate[0] + "-" + splitDate[1] + "-2020";
-    final String examTime = splitTime[0] + ":" + splitTime[1];
+    final String examDate = MessageFormat.format("{0}-{1}-2020", splitDate[0], splitDate[1]);
+    final String examTime = MessageFormat.format("{0}:{1}", splitTime[0], splitTime[1]);
 
     StringBuilder sms = new StringBuilder();
     sms.append("Your interview has been scheduled on ")
