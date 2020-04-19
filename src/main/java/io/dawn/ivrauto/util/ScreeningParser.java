@@ -68,7 +68,8 @@ public class ScreeningParser {
       JSONObject obj = (JSONObject) question;
       String body = (String) obj.get("body");
       String type = (String) obj.get("type");
-      newQuestion = new Question(body, type, screening, LocalDate.now());
+      String validation = (String) obj.get("validation");
+      newQuestion = new Question(body, type, validation, screening, LocalDate.now());
       questionService.save(newQuestion);
     }
   }

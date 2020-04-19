@@ -32,6 +32,9 @@ public class Question {
   @Column(name = "type")
   private String type;
 
+  @Column(name = "validation")
+  private String validation;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "screening_id")
   private Screening screening;
@@ -41,9 +44,11 @@ public class Question {
 
   public Question() {}
 
-  public Question(String body, String type, Screening screening, LocalDate date) {
+  public Question(
+      String body, String type, String validation, Screening screening, LocalDate date) {
     this.body = body;
     this.type = type;
+    this.validation = validation;
     this.screening = screening;
     this.date = date;
   }
@@ -70,6 +75,14 @@ public class Question {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public String getValidation() {
+    return validation;
+  }
+
+  public void setValidation(String validation) {
+    this.validation = validation;
   }
 
   public Screening getScreening() {

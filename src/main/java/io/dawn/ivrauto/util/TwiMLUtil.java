@@ -19,9 +19,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TwiMLUtil {
 
-  public static String redirect(long cid, int nextQuestionNumber, Screening screening) throws TwiMLException {
+  public static String redirect(long cid, int nextQuestionNumber, Screening screening)
+      throws TwiMLException {
     String nextQuestionURL =
-        "/question?cid="+cid+"&screening=" + screening.getId() + "&question=" + nextQuestionNumber;
+        "/question?cid="
+            + cid
+            + "&screening="
+            + screening.getId()
+            + "&question="
+            + nextQuestionNumber;
     return redirect(nextQuestionURL, HttpMethod.GET).toXml();
   }
 

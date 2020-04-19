@@ -16,7 +16,6 @@ import io.dawn.ivrauto.service.ResponseService;
 import io.dawn.ivrauto.util.ResponseParser;
 import io.dawn.ivrauto.util.TwiMLUtil;
 import java.io.PrintWriter;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 public class ResponseResource {
+
+  private static final String FORMAT = "(?<=\\G.{" + 2 + "})";
   private QuestionRepository questionRepository;
   private ResponseRepository responseRepository;
   private CandidateRepository candidateRepository;
@@ -74,7 +75,12 @@ public class ResponseResource {
       String title = screening.getTitle();
 
       // saving the response given by the candidate
-      persistResponse(new ResponseParser(currentQuestion.get(), candidate.get(), request).parse());
+      final Response fromUser =
+          new ResponseParser(currentQuestion.get(), candidate.get(), request).parse();
+
+      if (fromUser != null) {
+        persistResponse(fromUser);
+      }
 
       // if it is the last question of the screening
       if (screening.isLastQuestion(currentQuestion.get())) {
@@ -91,25 +97,33 @@ public class ResponseResource {
           // for a voice call
           responseWriter.print(TwiMLUtil.voiceResponse(message));
 
-          log.info("Generating exam date and time for cid: " + cid);
+          log.info("Generating exam date and time");
           final List<String> responseDateTime = responseRepository.generateExamDate(cid);
-          StringBuilder sms = generateInterviewDateAndTime(responseDateTime);
-          log.info("Interview date and time generated successfully...");
 
-          MessageCreator creator =
-              Message.creator(
-                  new PhoneNumber(candidate.get().getMobileNumber()),
-                  new PhoneNumber(from),
-                  sms.toString());
-          creator.create();
-          log.info("SMS sent successfully to " + candidate.get().getMobileNumber());
+          if (responseDateTime.size() != 0) {
+            StringBuilder sms = generateInterviewDateAndTime(responseDateTime);
+            log.info("Interview date and time generated successfully...");
 
-          // updating candidate interview status
-          candidateRepository.updateInterviewStatus(cid);
-          log.info("Interview scheduled for the candidate.");
+            MessageCreator creator =
+                Message.creator(
+                    new PhoneNumber(candidate.get().getMobileNumber()),
+                    new PhoneNumber(from),
+                    sms.toString());
+            creator.create();
+            log.info("SMS sent successfully to " + candidate.get().getMobileNumber());
+
+            // updating candidate interview status
+            candidateRepository.updateInterviewStatus(cid);
+            log.info("Interview scheduled for the candidate.");
+          }
         }
+      } else if (fromUser == null) {
+        // redirects to the same question if user inputs invalid options.
+        responseWriter.print(
+            TwiMLUtil.redirect(
+                cid, Integer.parseInt(String.valueOf(currentQuestion.get().getId())), screening));
       } else {
-        // if not last question, then proceed to the next question
+        // user keys in valid input and if not last question, then proceed to the next question
         responseWriter.print(
             TwiMLUtil.redirect(
                 cid, screening.getNextQuestionNumber(currentQuestion.get()), screening));
@@ -119,11 +133,12 @@ public class ResponseResource {
   }
 
   private StringBuilder generateInterviewDateAndTime(List<String> responseDateTime) {
-    String[] splitDate = responseDateTime.get(0).split("(?<=\\G.{" + 2 + "})");
-    String[] splitTime = responseDateTime.get(1).split("(?<=\\G.{" + 2 + "})");
+    String[] splitDate = responseDateTime.get(0).split(FORMAT);
+    String[] splitTime = responseDateTime.get(1).split(FORMAT);
 
-    final String examDate = MessageFormat.format("{0}-{1}-2020", splitDate[0], splitDate[1]);
-    final String examTime = MessageFormat.format("{0}:{1}", splitTime[0], splitTime[1]);
+    final int year = ResponseParser.getYear(Integer.parseInt(splitDate[0]));
+    final String examDate = String.format("%s-%s-%d", splitDate[0], splitDate[1], year);
+    final String examTime = String.format("%s:%s", splitTime[0], splitTime[1]);
 
     StringBuilder sms = new StringBuilder();
     sms.append("Your interview has been scheduled on ")
