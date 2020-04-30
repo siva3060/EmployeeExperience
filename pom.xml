@@ -12,6 +12,7 @@
   <groupId>io.dawn</groupId>
   <artifactId>EmployeeExperience</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
   <name>EmployeeExperience</name>
   <description>Employee Experience IVR Project</description>
 

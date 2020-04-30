@@ -11,19 +11,22 @@ public class RecordFactory {
   @Value("${ngrok.domain}")
   private static String ngrokDomain;
 
+  @Value("${aws.instance}")
+  private static String awsInstance;
+
   public static Record record(Question question) {
     return new Record.Builder()
-        .action(ngrokDomain + "/save_response?qid=" + question.getId())
+        .action(awsInstance + "/save_response?qid=" + question.getId())
         .method(HttpMethod.POST)
         .transcribe(true)
-        .transcribeCallback(ngrokDomain + "/save_response?qid=" + question.getId())
+        .transcribeCallback(awsInstance + "/save_response?qid=" + question.getId())
         .maxLength(60)
         .build();
   }
 
   public static Gather gather(Question question) {
     return new Gather.Builder()
-        .action(ngrokDomain + "/save_response?qid=" + question.getId())
+        .action(awsInstance + "/save_response?qid=" + question.getId())
         .method(HttpMethod.POST)
         .finishOnKey("#")
         .build();

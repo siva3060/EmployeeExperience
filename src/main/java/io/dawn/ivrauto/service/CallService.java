@@ -24,6 +24,9 @@ public class CallService {
   @Value("${ngrok.domain}")
   private String ngrokDomain;
 
+  @Value("${aws.instance}")
+  private String awsInstance;
+
   @Autowired
   public CallService(TwilioRestClient restClient) {
     this.restClient = restClient;
@@ -35,7 +38,7 @@ public class CallService {
                 new PhoneNumber(candidate.getMobileNumber()),
                 new PhoneNumber(fromTwilio),
                 URI.create(
-                    ngrokDomain
+                    awsInstance
                         + "/screening/call?cid="
                         + candidate.getId()
                         + "&number="

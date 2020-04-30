@@ -27,6 +27,9 @@ public class ScreeningResource {
   @Value("${ngrok.domain}")
   private String ngrokDomain;
 
+  @Value("${aws.instance}")
+  private String awsInstance;
+
   public ScreeningResource() {}
 
   @Autowired
@@ -125,7 +128,7 @@ public class ScreeningResource {
             " and we want to fix up an appointment with you for a formal discussion and evaluation.");
 
     String questionURL =
-        ngrokDomain + "/question?cid=" + cid + "&screening=" + screening.getId() + "&question=1";
+        awsInstance + "/question?cid=" + cid + "&screening=" + screening.getId() + "&question=1";
     if (request.getParameter("MessageSid") != null) {
       return TwiMLUtil.messagingResponseWithRedirect(stringBuilder.toString(), questionURL);
     } else {
