@@ -19,6 +19,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,6 +34,9 @@ public class EmployeeExperienceApplication implements CommandLineRunner {
 
   @Autowired JobLauncher jobLauncher;
   @Autowired Job job;
+
+  @Value("${import.data.screening.file}")
+  private String screeningFile;
 
   @Autowired
   public EmployeeExperienceApplication(
@@ -72,6 +76,6 @@ public class EmployeeExperienceApplication implements CommandLineRunner {
     QuestionService questionService = new QuestionService(questionRepository);
 
     ScreeningParser screeningParser = new ScreeningParser(screeningService, questionService);
-    screeningParser.parse("screening.json");
+    screeningParser.parse(screeningFile);
   }
 }
